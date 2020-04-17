@@ -1,4 +1,4 @@
-package org.example;
+package org.example.server.product;
 
 public class Account {
     private Balance balance;

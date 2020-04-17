@@ -1,4 +1,4 @@
-package org.example;
+package org.example.server.product;
 
 public class Balance {
     private int sum;

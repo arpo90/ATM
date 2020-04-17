@@ -1,23 +1,16 @@
-package org.example;
-
+package org.example.interaction;
 
 import java.time.LocalDate;
 
-public class Card {
-    private Account account;
+public class Request {
     private LocalDate expDate;
     private int number;
     private int PIN;
 
-    public Card(Account account, LocalDate expDate, int number, int PIN) {
-        this.account = account;
+    public Request(LocalDate expDate, int number, int PIN) {
         this.expDate = expDate;
         this.number = number;
         this.PIN = PIN;
-    }
-
-    public Account getAccount() {
-        return account;
     }
 
     public LocalDate getExpDate() {
