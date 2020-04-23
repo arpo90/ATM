@@ -1,11 +1,9 @@
 package org.example.server;
 
-import org.example.interaction.Error;
+import org.example.interaction.ValidateException;
 import org.example.interaction.Request;
 import org.example.interaction.Responce;
 import org.example.server.product.Card;
-
-import java.time.LocalDate;
 
 public class Host {
     private Card card;
@@ -15,25 +13,29 @@ public class Host {
     }
 
     public Responce getBalance(Request request){
-        Responce responce;
-        if (card.getNumber() == request.getNumber()) {
-            if (card.getPIN() == request.getPIN()) {
-                if (card.getExpDate().equals(request.getExpDate())){
-
-                    responce = new Responce(card.getAccount().getBalance());
-                } else {
-                    responce = new Responce(new Error(1,"Error1"));
-                }
-            }else {
-                responce = new Responce(new Error(2,"Error2"));
-            }
-        }else {
-            responce = new Responce(new Error(3,"Error3"));
+        try {
+            validate(request);
+        } catch (ValidateException e) {
+            e.printStackTrace();
+            return new Responce(e.getCode(),e.getDesc());
         }
-
-        return responce;
+        return new Responce(card.getAccount().getBalance());
     }
 
+    private void validate(Request request) throws ValidateException {
+
+        if (card.getNumber() != request.getNumber()) {
+            throw new ValidateException(3,"Error3");
+        }
+
+        if (card.getPIN() != request.getPIN()) {
+            throw new ValidateException(2,"Error2");
+        }
+
+        if (!card.getExpDate().equals(request.getExpDate())){
+            throw new ValidateException(1,"Error1");
+        }
+    }
 
 
     @Override

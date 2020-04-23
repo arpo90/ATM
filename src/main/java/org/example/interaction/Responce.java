@@ -2,25 +2,36 @@ package org.example.interaction;
 
 import org.example.server.product.Balance;
 
+import java.util.Optional;
+
 public class Responce {
     private Balance balance;
-    private Error error;
+    private int code;
+    private String desc;
+
 
     public Responce(Balance balance) {
         this.balance = balance;
-        this.error = new Error();
+        this.code = 0;
+        this.desc = "Ok";
     }
 
-    public Responce(Error error) {
-        this.error = error;
+    public Responce(int code, String desc) {
+        this.code = code;
+        this.desc = desc;
+
         this.balance = null;
     }
 
-    public Balance getBalance() {
-        return balance;
+    public Optional<Balance> getBalance() {
+        return Optional.ofNullable(balance);
     }
 
-    public Error getError() {
-        return error;
+    public int getCode() {
+        return code;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 }

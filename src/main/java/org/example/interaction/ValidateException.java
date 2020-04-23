@@ -1,15 +1,15 @@
 package org.example.interaction;
 
-public class Error {
+public class ValidateException extends Exception{
     private int code;
     private String desc;
 
-    public Error() {
+    public ValidateException() {
         code = 0;
         desc = "";
     }
 
-    public Error(int code, String desc) {
+    public ValidateException(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }

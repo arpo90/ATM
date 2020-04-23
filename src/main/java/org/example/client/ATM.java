@@ -17,11 +17,11 @@ public class ATM {
 
 //        Request request = new Request(expDate, number, PIN);
 //        Responce responce = host.getBalance(request);
-//        Balance balance = responce.getBalance();
-//        return  balance;
+//        Optional<Balance> balance = responce.getBalance();
+//        return  balance.orElse();
 
         return host.getBalance(
                 new Request(expDate, number, PIN)
-        ).getBalance();
+        ).getBalance().orElse(new Balance(0,"USD"));
     }
 }
