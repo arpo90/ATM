@@ -2,6 +2,7 @@ package org.example.client;
 
 import java.time.LocalDate;
 
+@Deprecated
 public class Operation {
     private String type;
     private LocalDate expDate;

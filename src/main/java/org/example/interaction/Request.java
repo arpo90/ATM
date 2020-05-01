@@ -4,10 +4,10 @@ import java.time.LocalDate;
 
 public class Request {
     private LocalDate expDate;
-    private int number;
+    private String number;
     private int PIN;
 
-    public Request(LocalDate expDate, int number, int PIN) {
+    public Request(LocalDate expDate, String number, int PIN) {
         this.expDate = expDate;
         this.number = number;
         this.PIN = PIN;
@@ -17,7 +17,7 @@ public class Request {
         return expDate;
     }
 
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
