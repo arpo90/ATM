@@ -13,7 +13,7 @@ public class ATM {
         this.host = host;
     }
 
-    public Balance getBalance(LocalDate expDate, int number, int PIN){
+    public Balance getBalance(LocalDate expDate, String number, int PIN) {
 
 //        Request request = new Request(expDate, number, PIN);
 //        Responce responce = host.getBalance(request);
@@ -22,6 +22,6 @@ public class ATM {
 
         return host.getBalance(
                 new Request(expDate, number, PIN)
-        ).getBalance().orElse(new Balance(0,"USD"));
+        ).getBalance().orElse(new Balance(0, "USD"));
     }
 }

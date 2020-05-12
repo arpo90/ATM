@@ -14,16 +14,16 @@ public class Card {
 
     public Card(Account account, LocalDate expDate, String number, int PIN) {
 
-        this.accounts.add( account);
+        this.accounts.add(account);
 
         this.expDate = expDate;
         this.number = number;
         this.PIN = PIN;
     }
 
-    public Account getAccount(int indx) {
-        if(accounts.size() <= indx) {
-            //sfgss
+    public Account getAccount(int indx) throws AccountNotFoundException {
+        if (accounts.size() <= indx) {
+            throw new AccountNotFoundException(1, "Index out of range");
         }
         return accounts.get(indx);
 
@@ -37,6 +37,13 @@ public class Card {
 //
 //        }
 //        return account;
+    }
+
+    public Optional<Account> getAccountOptional(int indx) {
+        if (accounts.size() <= indx) {
+            return Optional.empty();
+        }
+        return Optional.of(accounts.get(indx));
     }
 
     public LocalDate getExpDate() {
