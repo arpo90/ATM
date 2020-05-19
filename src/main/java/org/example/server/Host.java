@@ -7,6 +7,7 @@ import org.example.server.product.Account;
 import org.example.server.product.AccountNotFoundException;
 import org.example.server.product.Card;
 
+import java.security.PublicKey;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -47,6 +48,18 @@ public class Host {
         }
     }
 
+    public Responce getBalanceFromXMLFile(String requestFileName) {
+        Responce responce;
+        try {
+            Optional<Request> request = Request.fromXmlToObject(requestFileName);
+            responce = getBalance(request.orElseThrow(RuntimeException::new));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            responce = new Responce(1, "Request problem");
+        }
+        return responce;
+    }
+
     public void addCard(Card card) {
         this.cards.put(card.getNumber(), card);
     }
@@ -72,7 +85,6 @@ public class Host {
 
     @Override
     public String toString() {
-        //todo: написать алгоритм форматирования строки и возврат получивщегося значения
         String result = "";
         Object[] keySet = cards.keySet().toArray();
         for (Object o : keySet) {
