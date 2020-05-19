@@ -8,6 +8,7 @@ import org.example.server.product.AccountNotFoundException;
 import org.example.server.product.Card;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 public class Host {
@@ -27,23 +28,23 @@ public class Host {
 
         Account account;
 
-        try {
+       /* try {
             account = cards.get(request.getNumber()).getAccount(0);
         } catch (AccountNotFoundException e) {
             e.printStackTrace();
             return new Responce(e.getCode(), e.getDesc());
         }
 
-        return new Responce(account.getBalance());
-        /*
-        Optional<Account> acc = cards.get(request.getNumber()).getAccountOptional(0);
+        return new Responce(account.getBalance());*/
 
-        if(acc.isPresent()){
-            return new Responce(acc.get().getBalance());
-        }else {
+
+        try {
+            Optional<Account> acc = cards.get(request.getNumber()).getAccountOptional(0);
+            return new Responce(acc.orElseThrow(RuntimeException::new).getBalance());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
             return new Responce(1, "Account not found");
         }
-        */
     }
 
     public void addCard(Card card) {
