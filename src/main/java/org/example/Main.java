@@ -1,11 +1,17 @@
 package org.example;
 
+import org.example.interaction.Request;
 import org.example.server.Host;
 import org.example.server.product.Account;
 import org.example.server.product.AccountNotFoundException;
 import org.example.server.product.Balance;
 import org.example.server.product.Card;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +19,7 @@ import java.util.TreeMap;
 
 public class Main {
     public static void main(String[] args) {
-        Host host = new Host(
+        /*Host host = new Host(
                 new Card(
                         new Account(
                                 new Balance(
@@ -83,6 +89,13 @@ public class Main {
             }
             res += "Card number: " + keySet[i] + ", Card ExpDate: " + map.get(keySet[i]).getExpDate() + "\n";
         }
-        System.out.println(res);
+        System.out.println(res);*/
+        String filename = "test/Request.xml";
+        Request request = new Request(LocalDate.now(), "1234 1234 1234 1234", 1234);
+        request.convertObjectToXml(filename);
+
+        Request request1 = (Request.fromXmlToObject(filename)).orElseThrow(RuntimeException::new);
+        System.out.println(request.toString());
     }
+
 }

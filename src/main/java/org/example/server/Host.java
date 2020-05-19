@@ -7,7 +7,9 @@ import org.example.server.product.Account;
 import org.example.server.product.AccountNotFoundException;
 import org.example.server.product.Card;
 
+import java.security.PublicKey;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 public class Host {
@@ -27,23 +29,35 @@ public class Host {
 
         Account account;
 
-        try {
+       /* try {
             account = cards.get(request.getNumber()).getAccount(0);
         } catch (AccountNotFoundException e) {
             e.printStackTrace();
             return new Responce(e.getCode(), e.getDesc());
         }
 
-        return new Responce(account.getBalance());
-        /*
-        Optional<Account> acc = cards.get(request.getNumber()).getAccountOptional(0);
+        return new Responce(account.getBalance());*/
 
-        if(acc.isPresent()){
-            return new Responce(acc.get().getBalance());
-        }else {
+
+        try {
+            Optional<Account> acc = cards.get(request.getNumber()).getAccountOptional(0);
+            return new Responce(acc.orElseThrow(RuntimeException::new).getBalance());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
             return new Responce(1, "Account not found");
         }
-        */
+    }
+
+    public Responce getBalanceFromXMLFile(String requestFileName) {
+        Responce responce;
+        try {
+            Optional<Request> request = Request.fromXmlToObject(requestFileName);
+            responce = getBalance(request.orElseThrow(RuntimeException::new));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            responce = new Responce(1, "Request problem");
+        }
+        return responce;
     }
 
     public void addCard(Card card) {
@@ -71,7 +85,6 @@ public class Host {
 
     @Override
     public String toString() {
-        //todo: написать алгоритм форматирования строки и возврат получивщегося значения
         String result = "";
         Object[] keySet = cards.keySet().toArray();
         for (Object o : keySet) {

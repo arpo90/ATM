@@ -1,5 +1,6 @@
 package org.example.client;
 
+import org.example.interaction.Payload;
 import org.example.interaction.Request;
 import org.example.server.Host;
 import org.example.server.product.Balance;
@@ -20,8 +21,13 @@ public class ATM {
 //        Optional<Balance> balance = responce.getBalance();
 //        return  balance.orElse();
 
-        return host.getBalance(
+        String filePath = "test/Request.xml";
+        Request request = new Request(expDate, number, PIN);
+        request.convertObjectToXml(filePath);
+
+        return host.getBalanceFromXMLFile(filePath).getBalance().orElseThrow(RuntimeException::new);
+        /*return host.getBalance(
                 new Request(expDate, number, PIN)
-        ).getBalance().orElse(new Balance(0, "USD"));
+        ).getBalance().orElse(new Balance(0, "USD"));*/
     }
 }
