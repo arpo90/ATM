@@ -87,14 +87,14 @@ public class Main {
             res += "Card number: " + keySet[i] + ", Card ExpDate: " + map.get(keySet[i]).getExpDate() + "\n";
         }
         System.out.println(res);*/
-        String filename = "test/Request.xml";
+        /*String filename = "test/Request.xml";
         Request request = new Request(LocalDate.now(), "1234 1234 1234 1234", 1234);
         request.convertObjectToXml(filename);
 
         Request request1 = (Request.fromXmlToObject(filename)).orElseThrow(RuntimeException::new);
         System.out.println(request.toString());
 
-        System.out.println(AccountTypes.DEFAULT.ordinal());
+        System.out.println(AccountTypes.DEFAULT.ordinal());*/
     }
 
 }
