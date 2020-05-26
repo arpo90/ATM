@@ -5,6 +5,7 @@ import org.example.interaction.Responce;
 import org.example.interaction.ValidateException;
 import org.example.server.product.Account;
 import org.example.server.product.AccountNotFoundException;
+import org.example.server.product.AccountTypes;
 import org.example.server.product.Card;
 
 import java.security.PublicKey;
@@ -30,7 +31,7 @@ public class Host {
         Account account;
 
        /* try {
-            account = cards.get(request.getNumber()).getAccount(0);
+            account = cards.get(request.getNumber()).getAccount(AccountTypes.DEFAULT.ordinal());
         } catch (AccountNotFoundException e) {
             e.printStackTrace();
             return new Responce(e.getCode(), e.getDesc());
@@ -40,7 +41,7 @@ public class Host {
 
 
         try {
-            Optional<Account> acc = cards.get(request.getNumber()).getAccountOptional(0);
+            Optional<Account> acc = cards.get(request.getPayload().getNumber()).getAccountOptional(AccountTypes.DEFAULT.ordinal());
             return new Responce(acc.orElseThrow(RuntimeException::new).getBalance());
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -66,17 +67,17 @@ public class Host {
 
     private void validate(Request request) throws ValidateException {
 
-        if (!cards.containsKey(request.getNumber())) {
+        if (!cards.containsKey(request.getPayload().getNumber())) {
             throw new ValidateException(3, "Error3");
         }
 
-        Card card = cards.get(request.getNumber());
+        Card card = cards.get(request.getPayload().getNumber());
 
-        if (card.getPIN() != request.getPIN()) {
+        if (card.getPIN() != request.getPayload().getPIN()) {
             throw new ValidateException(2, "Error2");
         }
 
-        if (!card.getExpDate().equals(request.getExpDate())) {
+        if (!card.getExpDate().equals(request.getPayload().getExpDate())) {
             throw new ValidateException(1, "Error1");
         }
 

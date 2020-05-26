@@ -1,7 +1,13 @@
 package org.example.server.product;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "Balance")
 public class Balance {
+    @XmlElement(name = "sum")
     private int sum;
+    @XmlElement(name = "currency")
     private String currency;
 
     public Balance(int sum, String currency) {

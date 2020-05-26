@@ -2,10 +2,7 @@ package org.example;
 
 import org.example.interaction.Request;
 import org.example.server.Host;
-import org.example.server.product.Account;
-import org.example.server.product.AccountNotFoundException;
-import org.example.server.product.Balance;
-import org.example.server.product.Card;
+import org.example.server.product.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -96,6 +93,8 @@ public class Main {
 
         Request request1 = (Request.fromXmlToObject(filename)).orElseThrow(RuntimeException::new);
         System.out.println(request.toString());
+
+        System.out.println(AccountTypes.DEFAULT.ordinal());
     }
 
 }

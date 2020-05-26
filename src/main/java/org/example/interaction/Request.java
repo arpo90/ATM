@@ -12,16 +12,20 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @XmlRootElement(name = "Request")
-public class Request extends Payload {
-    @XmlElement(name = "SomeXMLData")
-    private String someXMLData = "SomeData";
+public class Request {
+    @XmlElement(name = "payload")
+    private String payload;
 
     public Request(LocalDate expDate, String number, int PIN) {
-        super(expDate, number, PIN);
+        //this.payload = new BalancePayload(expDate, number, PIN);
     }
 
-    public Request() {
-        super();
+    public Request(String payload) {
+        this.payload = payload;
+    }
+
+    public String getPayload() {
+        return payload;
     }
 
     public static Optional<Request> fromXmlToObject(String filePath) {
@@ -50,9 +54,9 @@ public class Request extends Payload {
     @Override
     public String toString() {
         return "Request{" +
-                "ExpDate=" + super.getExpDate() +
-                ", Number='" + super.getNumber() + '\'' +
-                ", PIN=" + super.getPIN() +
+                "ExpDate=" + this.payload.getExpDate() +
+                ", Number='" + this.payload.getNumber() + '\'' +
+                ", PIN=" + this.payload.getPIN() +
                 '}';
     }
 }
