@@ -1,33 +1,52 @@
 package org.example.client;
 
-import org.example.interaction.Payload;
+import org.example.interaction.BalanceRequestPayload;
+import org.example.interaction.BalanceResponsePayload;
+import org.example.interaction.IntegrationParser;
 import org.example.interaction.Request;
 import org.example.server.Host;
-import org.example.server.product.Balance;
 
 import java.time.LocalDate;
 
-public class ATM {
-    Host host;
+//todo: В классе org.example.clien.ATM в методе
+// getBalance как наилучшим образом обрабатывать
+// ошибки (exeption) парсинга классов.
+// Нужно клиентскому коду каким либо образом сообщать об ошибке компиляции.
+// Клиентский код в данном случаи в классе org.example.Main
 
-    public ATM(Host host) {
+//todo: В классе org.example.clien.ATM добавить поля типа
+// интерфейса из пункта 3 (на сайте КУ описано в такой последовательности.
+// Задача с общим интерфейсом для классов парсеров).
+// Инициализировать это поле в конструкторе класса ATM и добавить сеттер
+// для изменения этого поля. Оно будет меняться на уровне класса org.example.Main
+public class ATM {
+    private Host host;
+    private IntegrationParser integrationParser;
+
+    public ATM(Host host, IntegrationParser integrationParcer) {
         this.host = host;
+        this.integrationParser = integrationParcer;
     }
 
-    public Balance getBalance(LocalDate expDate, String number, int PIN) {
+    public BalanceResponsePayload getBalance(LocalDate expDate, String number, int PIN) throws Exception {
 
 //        Request request = new Request(expDate, number, PIN);
 //        Responce responce = host.getBalance(request);
 //        Optional<Balance> balance = responce.getBalance();
 //        return  balance.orElse();
 
-        String filePath = "test/Request.xml";
-        Request request = new Request(expDate, number, PIN);
-        request.convertObjectToXml(filePath);
+        String balanceRequestPayload = integrationParser.saveObject(
+                new BalanceRequestPayload(expDate, number, PIN)).orElseThrow(Exception::new);
 
-        return host.getBalanceFromXMLFile(filePath).getBalance().orElseThrow(RuntimeException::new);
-        /*return host.getBalance(
-                new Request(expDate, number, PIN)
-        ).getBalance().orElse(new Balance(0, "USD"));*/
+        Request request = new Request(balanceRequestPayload);
+
+        BalanceResponsePayload balanceResponsePayload = (BalanceResponsePayload) integrationParser.getObject(
+                host.getBalance(request).getPayload(), BalanceResponsePayload.class).orElseThrow(Exception::new);
+
+        return balanceResponsePayload;
+    }
+
+    public void setIntegrationParser(IntegrationParser integrationParser) {
+        this.integrationParser = integrationParser;
     }
 }

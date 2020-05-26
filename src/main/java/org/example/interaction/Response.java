@@ -4,27 +4,27 @@ import org.example.server.product.Balance;
 
 import java.util.Optional;
 
-public class Responce {
-    private Balance balance;
+public class Response {
+    private String payload;
     private int code;
     private String desc;
 
 
-    public Responce(Balance balance) {
-        this.balance = balance;
+    public Response(String payload) {
+        this.payload = payload;
         this.code = 0;
         this.desc = "Ok";
     }
 
-    public Responce(int code, String desc) {
+    public Response(int code, String desc) {
         this.code = code;
         this.desc = desc;
 
-        this.balance = null;
+        this.payload = "";
     }
 
-    public Optional<Balance> getBalance() {
-        return Optional.ofNullable(balance);
+    public String getPayload() {
+        return payload;
     }
 
     public int getCode() {

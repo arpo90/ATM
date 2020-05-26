@@ -1,16 +1,17 @@
-package org.example.server.product;
+package org.example.interaction;
+
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "Balance")
-public class Balance {
-    @XmlElement(name = "sum")
+@XmlRootElement(name = "Balance.Response.Payload")
+public class BalanceResponsePayload {
+    @XmlElement
     private int sum;
-    @XmlElement(name = "currency")
+    @XmlElement
     private String currency;
 
-    public Balance(int sum, String currency) {
+    public BalanceResponsePayload(int sum, String currency) {
         this.sum = sum;
         this.currency = currency;
     }
@@ -22,4 +23,5 @@ public class Balance {
     public String getCurrency() {
         return currency;
     }
+
 }

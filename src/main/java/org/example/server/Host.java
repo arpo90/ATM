@@ -1,82 +1,74 @@
 package org.example.server;
 
-import org.example.interaction.Request;
-import org.example.interaction.Responce;
-import org.example.interaction.ValidateException;
+import org.example.interaction.*;
 import org.example.server.product.Account;
-import org.example.server.product.AccountNotFoundException;
+import org.example.server.product.AccountTypes;
+import org.example.server.product.Balance;
 import org.example.server.product.Card;
 
-import java.security.PublicKey;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
 public class Host {
     private Map<String, Card> cards = new TreeMap<>();
+    private IntegrationParser integrationParser;
 
-    public Host(Card card) {
+    public Host(Card card, IntegrationParser integrationParcer) {
+        this.integrationParser = integrationParcer;
         this.cards.put(card.getNumber(), card);
     }
 
-    public Responce getBalance(Request request) {
-        try {
-            validate(request);
-        } catch (ValidateException e) {
-            e.printStackTrace();
-            return new Responce(e.getCode(), e.getDesc());
-        }
-
-        Account account;
-
-       /* try {
-            account = cards.get(request.getNumber()).getAccount(0);
-        } catch (AccountNotFoundException e) {
-            e.printStackTrace();
-            return new Responce(e.getCode(), e.getDesc());
-        }
-
-        return new Responce(account.getBalance());*/
-
-
-        try {
-            Optional<Account> acc = cards.get(request.getNumber()).getAccountOptional(0);
-            return new Responce(acc.orElseThrow(RuntimeException::new).getBalance());
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            return new Responce(1, "Account not found");
-        }
+    public void setIntegrationParser(IntegrationParser integrationParser) {
+        this.integrationParser = integrationParser;
     }
 
-    public Responce getBalanceFromXMLFile(String requestFileName) {
-        Responce responce;
+    public Response getBalance(Request request) {
+        BalanceRequestPayload balancePayload;
+
         try {
-            Optional<Request> request = Request.fromXmlToObject(requestFileName);
-            responce = getBalance(request.orElseThrow(RuntimeException::new));
-        } catch (RuntimeException e) {
+            Optional<Object> objectPayload = integrationParser.getObject(request.getPayload(), BalanceRequestPayload.class);
+            balancePayload = (BalanceRequestPayload) objectPayload.orElseThrow(Exception::new);
+        } catch (Exception e) {
             e.printStackTrace();
-            responce = new Responce(1, "Request problem");
+            return new Response(2, "Parse Exception");
         }
-        return responce;
+
+        try {
+            validate(balancePayload);
+        } catch (ValidateException e) {
+            e.printStackTrace();
+            return new Response(e.getCode(), e.getDesc());
+        }
+
+        try {
+            Optional<Account> acc = cards.get(balancePayload.getNumber()).getAccountOptional(AccountTypes.DEFAULT.ordinal());
+            Balance balance = acc.orElseThrow(RuntimeException::new).getBalance();
+            BalanceResponsePayload balanceResponsePayload = new BalanceResponsePayload(balance.getSum(), balance.getCurrency());
+            return new Response(integrationParser.saveObject(balanceResponsePayload).orElseThrow(Exception::new));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response(1, "Account not found");
+        }
     }
 
     public void addCard(Card card) {
         this.cards.put(card.getNumber(), card);
     }
 
-    private void validate(Request request) throws ValidateException {
+    private void validate(BalanceRequestPayload balancePayload) throws ValidateException {
 
-        if (!cards.containsKey(request.getNumber())) {
+        if (!cards.containsKey(balancePayload.getNumber())) {
             throw new ValidateException(3, "Error3");
         }
 
-        Card card = cards.get(request.getNumber());
+        Card card = cards.get(balancePayload.getNumber());
 
-        if (card.getPIN() != request.getPIN()) {
+        if (card.getPIN() != balancePayload.getPIN()) {
             throw new ValidateException(2, "Error2");
         }
 
-        if (!card.getExpDate().equals(request.getExpDate())) {
+        if (!card.getExpDate().equals(balancePayload.getExpDate())) {
             throw new ValidateException(1, "Error1");
         }
 
