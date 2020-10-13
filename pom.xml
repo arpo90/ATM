@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <junit.junit.version>4.12</junit.junit.version>
+        <junit.junit.version>4.13.1</junit.junit.version>
     </properties>
 
     <dependencies>
